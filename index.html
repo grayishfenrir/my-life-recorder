@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Gemini Journal Writer</title>
+	</head>
+	<body>
+		<h1>Gemini Journal Writer</h1>
+
+		<div>
+			<label for="user-input">Write your journal entry prompt:</label>
+			<textarea id="user-input" rows="5" cols="50"></textarea>
+		</div>
+
+		<button id="submit-button">Generate Journal Entry</button>
+
+		<div id="output"></div>
+
+		<script>
+			const submitButton = document.getElementById("submit-button");
+			const userInput = document.getElementById("user-input");
+			const output = document.getElementById("output");
+
+			submitButton.addEventListener("click", async () => {
+				const prompt = userInput.value;
+
+				// Call your Firebase Cloud Function using Fetch API
+				try {
+					const response = await fetch(
+						"http://127.0.0.1:5001/my-life-recorder/us-central1/sayHello",
+						{
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json",
+							},
+							body: JSON.stringify({ prompt }),
+						}
+					);
+
+					const data = await response.json();
+					output.textContent = data; // Display the response from Gemini
+				} catch (error) {
+					console.error("Error fetching data:", error);
+					output.textContent =
+						"An error occurred. Please try again later.";
+				}
+			});
+		</script>
+	</body>
+</html>

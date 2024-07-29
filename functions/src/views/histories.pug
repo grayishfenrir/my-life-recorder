@@ -1,0 +1,30 @@
+doctype html
+html(lang="en")
+  include partials/head
+  body
+    .container
+      h1 #{pageTitle}
+      .history-container
+        if records.length > 0
+          each record in records
+            .record
+              h2 Diary for #{record.date}
+              p #{record.diary}
+        else
+          p No records found.
+      
+      .button-container
+        a.btn.btn-primary(id="createAutobiographyButton") Create Autobiography
+        a.btn.btn-secondary(href="/my_autobiography") View Autobiography
+        a.btn.btn-secondary(href="/") Back to Recorder
+
+      // 로딩 인디케이터 추가
+      #loading-indicator(style="display: none;")
+        .spinner
+          // 스피너 아이콘을 사용한 디자인
+          .double-bounce1
+          .double-bounce2
+        p Loading, please wait...
+
+    include partials/footer
+    script(type="module" src="/assets/js/historiesScripts.js")

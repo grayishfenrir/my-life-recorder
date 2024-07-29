@@ -1,0 +1,26 @@
+doctype html
+html(lang="en")
+  include partials/head
+
+  body
+    .container
+      h1 Sign Up
+      form(action="/signup", method="post", class="signup-form")
+        .form-group
+          label(for="email") Email
+          input(type="email", id="email", name="email", required, class="form-control")
+        .form-group
+          label(for="nickname") Nickname
+          input(type="text", id="nickname", name="nickname", required, class="form-control")
+        .form-group
+          label(for="password") Password
+          input(type="password", id="password", name="password", required, class="form-control", 
+                pattern="^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&()_+\\-=[\\]{};':\"\\|,.<>/?]).{6,}$",
+                title="Password must be at least 6 characters long and include letters, numbers, and special characters")
+        .form-group
+          label(for="confirm-password") Confirm Password
+          input(type="password", id="confirm-password", name="confirm-password", required, class="form-control")
+        button.btn.btn-primary(type="submit") Sign Up
+
+    include partials/footer
+    script(type="module" src="/assets/js/loginScripts.js")

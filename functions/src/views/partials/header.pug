@@ -1,0 +1,6 @@
+header
+  if user
+    .user-info
+      p Welcome, #{user.nickname}
+      form(action="/logout", method="post")
+        button.btn.btn-primary(type="submit") Logout

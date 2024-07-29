@@ -1,0 +1,54 @@
+doctype html
+html(lang="en")
+  include partials/head
+  body
+    .container
+      h1 #{pageTitle}
+
+      .section
+        h2 Introduction
+        p #{introduction || 'No introduction available.'}
+
+      .section
+        h2 Early Life and Family Background
+        p #{earlyLife || 'No information available.'}
+
+      .section
+        h2 Formative Experiences
+        p #{formativeExperiences || 'No information available.'}
+
+      .section
+        h2 Education
+        p #{education || 'No information available.'}
+
+      .section
+        h2 Career and Achievements
+        p #{career || 'No information available.'}
+
+      .section
+        h2 Personal Challenges and Growth
+        p #{challenges || 'No information available.'}
+
+      .section
+        h2 Relationships and Influences
+        p #{relationships || 'No information available.'}
+
+      .section
+        h2 Major Life Events
+        p #{majorEvents || 'No information available.'}
+
+      .section
+        h2 Reflections and Lessons Learned
+        p #{reflections || 'No information available.'}
+
+      .section
+        h2 Future Aspirations and Goals
+        p #{aspirations || 'No information available.'}
+
+      .section
+        h2 Conclusion
+        p #{conclusion || 'No conclusion available.'}
+
+      .buttons
+        a.btn.btn-primary(href="/histories") View Histories
+        a.btn.btn-secondary(href="/daily_recorder") Return to Recorder
