@@ -3,7 +3,15 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const { FieldValue, FieldPath } = require('firebase-admin/firestore');
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const e = require('express');
+
+const {
+    log,
+    info,
+    debug,
+    warn,
+    error,
+    write,
+} = require("firebase-functions/logger");
 
 exports.home = async (req, res) => {
     return res.render('home', {
@@ -49,8 +57,8 @@ exports.signup = async (req, res) => {
 
         // Redirect to home page
         res.redirect('/');
-    } catch (error) {
-        console.error('Error signing up:', error);
+    } catch (e) {
+        error('Error signing up:', e);
         res.status(500).send('Error signing up. Please try again later.');
     }
 };
@@ -86,11 +94,15 @@ exports.login = async (req, res) => {
         });
 
         // 세션 ID를 포함하는 쿠키 반환
-        res.cookie('sessionId', sessionId, { httpOnly: true });
-        res.json({ success: true });
-    } catch (error) {
-        console.error('Error verifying ID token:', error);
-        res.status(401).json({ success: false, message: 'Invalid ID token' });
+        res.cookie('__session', sessionId, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'None',
+        });
+        return res.json({ success: true });
+    } catch (e) {
+        error('Error verifying ID token:', e);
+        return res.status(401).json({ success: false, message: 'Invalid ID token' });
     }
 };
 
@@ -110,8 +122,8 @@ exports.logout = async (req, res) => {
         try {
             const db = admin.firestore();
             await db.collection('sessions').doc(sessionId).delete();
-        } catch (error) {
-            console.error('Error deleting session:', error);
+        } catch (e) {
+            error('Error deleting session:', e);
         }
     }
 
@@ -166,8 +178,8 @@ exports.renderRecorder = async (req, res) => {
             pageTitle: "Daily Recorder",
             conversations: JSON.stringify(conversations)
         });
-    } catch (error) {
-        console.error('Error accessing protected route:', error);
+    } catch (e) {
+        error('Error accessing protected route:', e);
         res.status(500).send('Error accessing page. Please try again later.');
     }
 };
@@ -253,8 +265,8 @@ exports.sendMessage = async (req, res) => {
         }, { merge: true });
 
         res.status(200).json({ success: true, response: text });
-    } catch (error) {
-        console.error('Error processing message:', error);
+    } catch (e) {
+        error('Error processing message:', e);
         res.status(500).send('Error processing message.');
     }
 };
@@ -313,8 +325,8 @@ exports.saveDiary = async (req, res) => {
         });
 
         res.status(200).json({ message: 'Diary saved successfully' });
-    } catch (error) {
-        console.error('Error saving diary:', error);
+    } catch (e) {
+        error('Error saving diary:', e);
         res.status(500).json({ error: 'Failed to save diary' });
     }
 };
@@ -348,8 +360,8 @@ exports.renderHistories = async (req, res) => {
             pageTitle: 'History',
             records: records
         });
-    } catch (error) {
-        console.error('Error fetching history:', error);
+    } catch (e) {
+        error('Error fetching history:', e);
         res.status(500).send('Failed to fetch history');
     }
 };
@@ -400,8 +412,8 @@ exports.renderAutobiography = async (req, res) => {
             pageTitle: 'My Autobiography',
             ...autography
         });
-    } catch (error) {
-        console.error('Error fetching autobiography:', error);
+    } catch (e) {
+        error('Error fetching autobiography:', e);
         res.status(500).send('Failed to fetch autobiography');
     }
 };
@@ -437,7 +449,7 @@ exports.createAutobiography = async (req, res) => {
         let savedCount = 0;
         savedCount = autobiographiesSnapshot.data().savedCount || 0;
 
-        if (savedCount >= 2) {
+        if (savedCount >= 5) {
             return res.status(200).json({ message: 'Save limit reached. Just to go History page.' });
         }
 
@@ -510,8 +522,8 @@ exports.createAutobiography = async (req, res) => {
         });
 
         res.status(200).json({ message: 'Autobiography created successfully' });
-    } catch (error) {
-        console.error('Error creating autobiography:', error);
+    } catch (e) {
+        error('Error creating autobiography:', e);
         res.status(500).json({ error: 'Failed to create autobiography' });
     }
 };

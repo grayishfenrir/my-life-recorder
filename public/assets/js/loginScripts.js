@@ -14,7 +14,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 // Get a reference to the auth service
-const auth = getAuth(); // Firebase Authentication 가져오기
+const auth = getAuth();
 
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('login-form');
@@ -65,7 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const password = passwordInput.value;
             const confirmPassword = confirmPasswordInput.value;
 
-            // 유효성 검사
             const passwordPattern = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&()_+\-=\[\]{};':"\\|,.<>/?]).{6,}$/;
 
             if (!passwordPattern.test(password)) {

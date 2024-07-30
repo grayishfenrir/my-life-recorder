@@ -1,6 +1,15 @@
 const admin = require('firebase-admin');
 const { FieldValue } = require('firebase-admin/firestore');
 
+const {
+    log,
+    info,
+    debug,
+    warn,
+    error,
+    write,
+} = require("firebase-functions/logger");
+
 function getCookie(req, name) {
     const cookies = req.headers.cookie ? req.headers.cookie.split(';') : [];
     for (const cookie of cookies) {
@@ -14,7 +23,7 @@ function getCookie(req, name) {
 
 exports.loginCheckMiddleware = async (req, res, next) => {
     try {
-        const sessionId = getCookie(req, 'sessionId');
+        const sessionId = getCookie(req, '__session');
         if (!sessionId) {
             return res.redirect('/')
         }
@@ -41,16 +50,17 @@ exports.loginCheckMiddleware = async (req, res, next) => {
         req.userNickname = sessionDoc.data().nickname;
 
         return next();
-    } catch (error) {
-        console.error('Error verifying session:', error);
-        return res.status(500).json({ message: 'Server error' });
+    } catch (e) {
+        error('Error verifying session:', e);
+        return res.redirect('/')
     }
 };
 
 
 exports.loginCheckAndGoMiddleware = async (req, res, next) => {
     try {
-        const sessionId = getCookie(req, 'sessionId');
+        const sessionId = getCookie(req, '__session');
+
         if (!sessionId) {
             return next()
         }
@@ -79,8 +89,8 @@ exports.loginCheckAndGoMiddleware = async (req, res, next) => {
         const date = new Date();
         const formattedDate = `${String(date.getDate()).padStart(2, '0')}${String(date.getMonth() + 1).padStart(2, '0')}${date.getFullYear()}`;
         return res.redirect(`/daily_recorder/${formattedDate}`)
-    } catch (error) {
-        console.error('Error verifying session:', error);
-        return res.status(500).json({ message: 'Server error' });
+    } catch (e) {
+        error('Error verifying session:', e);
+        return next();
     }
 };
