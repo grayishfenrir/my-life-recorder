@@ -90,7 +90,7 @@ function addMessage(text, type) {
     const messagesContainer = document.getElementById('messages');
     const messageElement = document.createElement('div');
     messageElement.classList.add('message', type);
-    messageElement.innerHTML = `<div class="content">${text}</div>`;
+    messageElement.innerHTML = `<div class="content">${text.replace(/\n/g, '<br>')}</div>`;
     messagesContainer.appendChild(messageElement);
 
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
